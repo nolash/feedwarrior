@@ -4,6 +4,7 @@ import uuid
 import logging
 import base64
 import enum
+import time
 
 # local imports
 from .common import defaulthasher
@@ -48,8 +49,13 @@ class entry:
             self.message.add_header('X-FEEDWARRIOR-{}'.format(x), v)
 
         logg.debug('complete message {}'.format(self.message))
+
+        d = email.utils.parsedate(self.message.get('Date'))
+        ts = time.mktime(d)
+
         return {
             'uuid': str(self.uuid),
+            'timestamp': int(ts),
             'payload': self.message.as_string(),
                 }
 
