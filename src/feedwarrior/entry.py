@@ -3,24 +3,54 @@ import email
 import uuid
 import logging
 import base64
+import enum
 
 # local imports
 from .common import defaulthasher
 
 logg = logging.getLogger()
 
+extensiontype = {
+    'TASKWARRIOR': uuid.UUID
+}
+
+class extension(enum.Enum):
+    TASKWARRIOR = 'TASKWARRIOR'
+    pass
 
 class entry:
 
-    def __init__(self, uu, payload):
+    def __init__(self, uu, message):
         self.uuid = uu
-        self.payload = payload
+        self.message = message
+        self.extensions = {}
 
+
+    def add_extension(self, k, v):
+        if not isinstance(k, extension):
+            raise ValueError('extension type {} invalid'.format(type(k)))
+        requiredtyp = extensiontype[k.value]
+        if not isinstance(v, requiredtyp):
+            raise ValueError('extension value is {}, but {} is required'.format(type(v).__name__, requiredtyp))
+        if self.extensions.get(k.value) == None:
+           self.extensions[k.value] = []
+        
+        self.extensions[k.value].append(str(v))
+
+        return True
+            
 
     def serialize(self):
+
+        for x in self.extensions.keys():
+            logg.debug('adding extension header {}'.format(x))
+            v = ','.join(self.extensions[x])
+            self.message.add_header('X-FEEDWARRIOR-{}'.format(x), v)
+
+        logg.debug('complete message {}'.format(self.message))
         return {
             'uuid': str(self.uuid),
-            'payload': self.payload,
+            'payload': self.message.as_string(),
                 }
 
    
@@ -66,5 +96,5 @@ def from_multipart_file(filename, hasher=defaulthasher):
         subject = str(uu)
         logg.info('subject not specified, using uuid {}'.format(subject))
 
-    return entry(uu, m.as_bytes())
+    return entry(uu, m)
 

@@ -60,8 +60,8 @@ else:
     sys.exit(1)
 
 try:
-    os.makedirs(config.feeds_dir, mode=0o777, exist_ok=False)
     os.makedirs(config.entries_dir, mode=0o777, exist_ok=False)
+    os.makedirs(config.feeds_dir, mode=0o777, exist_ok=False)
     logg.debug('creating datadir {}'.format(config.data_dir))
 except FileExistsError as e:
     logg.debug('using datadir {}'.format(config.data_dir))
