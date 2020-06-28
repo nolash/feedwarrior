@@ -44,3 +44,5 @@ def execute(config, feed, args):
 
     feeds_entry_path = os.path.join(feeds_entries_dir, uu)
     os.symlink(entry_path, feeds_entry_path)
+
+    feed.add(entry)
