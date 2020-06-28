@@ -48,8 +48,8 @@ config = feedwarrior.load_config(args.c)
 def get_feed_by_name(s):
     index_path = os.path.join(config.feeds_dir, 'names', s)
     resolved_path = os.path.realpath(index_path)
-    logg.debug('attempting to resolve feed with path {}'.format(resolved_path))
     os.stat(resolved_path)
+    logg.debug('feed path {} resolves to {}'.format(index_path, resolved_path))
     return os.path.basename(resolved_path)
 
 feed_current = None

@@ -29,6 +29,7 @@ class config:
             self.data_dir = cp['FEEDWARRIOR'].get(['datadir'])
 
         self.feeds_dir = os.path.join(self.data_dir, 'feeds')
+        self.alias_dir = os.path.join(self.feeds_dir, 'names')
         self.entries_dir = os.path.join(self.data_dir, 'entries')
         self.hasher = hashlib.sha256
 
