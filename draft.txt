@@ -1,0 +1,68 @@
+format of log
+{
+	"id": <uuid>,
+	"parent_id": <uuid>, ..needed if graph?
+	"name": <alphanum>,
+	"display_name": <base64> (optional),
+	"access": [<acl_entry...>], (optional),
+	"created": <timestamp>,
+	"updated": <timestamp>,
+	"entries": [<log_entry>],
+	"children": [<log>],
+}
+
+format of log entry {
+	"id": <uuid>,
+	"caption": <base64>,
+	"contents": [<multipart/mixed>],
+}
+
+# if set, server should generate random challenge to be signed by key
+format of acl entry
+{
+	"engine": <'pgp'>,
+	"key": <key>,
+}
+
+format of sum type
+{
+	"hash": <sha256>,
+	"digest": <digest>,
+}
+
+----
+
+MVP
+
+each log is in folder logs named by uuid
+each folder must have an ini-formatted file .log with a [LOG] section defining
+	- id uuid
+	- parent uuid (optional)
+	- child uuid (optional)
+
+each log entry is in folder entries named by uuid
+each folder much have an ini-formatted file .entry with:
+	- an [ENTRY] section with: log=<uuid>
+	- a [TASKWARRIOR] section with: uuid=<'*'|task-url>
+
+each folder must have a file _content which will be the main text body and the first entry of the multipart 
+each folder MAY have additional files which will be folded down into the multipart
+(for now a perl script will be used to generate the multiparts)
+
+simple python script that can:
+* CREATE a new log entry folder with optional parent uuid setting
+  - only argument is log uuid
+  - should take a taskwarrior uuid as flag option
+* GENERATE a log entry file ready to insert into graph using a log entry folder
+  - filename digest of contents
+  - file output in logs/<uuid-of-log> directory with <digest_uuid> as filename
+  - should not overwrite existing entry if found
+* SYNC will be a separate operation
+
+---
+
+multipart:
+
+Any header prefixed by X-WORKLOG- will be treated as an external reference. Currently only taskwarrior will be supported in uri format, eg:
+X-WORKLOG-TASKWARRIOR: <uuid|task-url>
+(only uuid will be ambiguous)
