@@ -37,32 +37,19 @@ cp = configparser.ConfigParser()
 cp.read(args.c)
 DATA_DIR = cp['FEEDWARRIOR']['datadir']
 
+cmd = 'log'
+if args.command != None:
+    log.error('invalid command {}'.format(args.command))
+    sys.exit(1)
+
+cmd_mod = None
+if cmd == 'log':
+    from feedwarrior.cmd import log as cmd_mod
+
 try:
     os.mkdir(DATA_DIR)
     logg.debug('creating datadir {}'.format(DATA_DIR))
 except FileExistsError as e:
     logg.debug('using datadir {}'.format(DATA_DIR))
 
-
-# TODO: move to submodule asap
-feed_parent = None
-if args.p != None:
-    try:
-        feed_parent = feedwarrior.feed(args.p)
-    except ValueError as e:
-        logg.error('invalid parent {}: {}'.format(args.p, e))
-        sys.exit(1)
-
 if __name__ == '__main__':
-    if args.command == None:
-        feed_current = feedwarrior.feed(parent=feed_parent)
-        uu = str(feed_current.uuid)
-        logg.debug('new log {}'.format(uu))
-        log_path = os.path.join(DATA_DIR, str(uu))
-        os.mkdir(log_path)
-
-        log_meta_path = os.path.join(log_path, '.log')
-        f = open(log_meta_path, 'x')
-        json.dump(feed_current.serialize(), f)
-    f.close()
-    sys.exit(0)
