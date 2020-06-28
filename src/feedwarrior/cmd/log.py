@@ -19,7 +19,7 @@ def execute(config, feed, args):
     if args.command == None:
         uu = str(feed.uuid)
         logg.debug('new log {}'.format(uu))
-        log_path = os.path.join(config.data_dir, str(uu))
+        log_path = os.path.join(config.feeds_dir, str(uu))
         os.mkdir(log_path)
 
         log_meta_path = os.path.join(log_path, '.log')
