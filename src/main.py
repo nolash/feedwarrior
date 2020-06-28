@@ -23,7 +23,7 @@ logg = logging.getLogger()
 
 
 argparser = argparse.ArgumentParser(description='create and manipulate feedwarrior logs')
-argparser.add_argument('-p', type=str, help='parent log uuid')
+argparser.add_argument('-l', help='feed log to operate on')
 argparser.add_argument('-c', required=True, type=str, help='configuration file')
 argparser.add_argument('-v', action='store_true', help='be verbose')
 sub = argparser.add_subparsers()
@@ -41,17 +41,16 @@ config = feedwarrior.load_config(args.c)
 
 
 feed_current = None
-feed_parent = None
-if args.p != None:
+if args.l != None:
     try:
-        feed_parent = feedwarrior.feed(args.p)
+        feed_current = feedwarrior.feed(args.l)
     except ValueError as e:
-        logg.error('invalid parent {}: {}'.format(args.p, e))
+        logg.error('invalid parent {}: {}'.format(args.l, e))
         sys.exit(1)
 
 cmd_mod = None
 if args.command == None:
-    feed_current = feedwarrior.feed(parent=feed_parent)
+    feed_current = feedwarrior.feed(parent=feed_current)
     cmd_mod = cmd_log
 elif args.command == 'entry':
     cmd_mod = cmd_entry

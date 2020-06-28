@@ -17,7 +17,7 @@ class feed:
         if parent != None:
             if type(parent).__name__ != 'feed':
                 raise ValueError('wrong type for parent: {}'.format(type(parent).__name__))
-            self.parent = parent
+            self.parent = copy.copy(parent)
 
         if created != None:
             self.created = created
