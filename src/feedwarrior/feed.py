@@ -2,7 +2,7 @@
 import uuid
 import copy
 import time
-from .feedwarrior import parse_uuid
+from .common import parse_uuid
 
 
 class feed:
