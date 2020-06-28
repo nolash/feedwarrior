@@ -22,10 +22,9 @@ logging.basicConfig(level=logging.ERROR)
 logg = logging.getLogger()
 
 
-
 argparser = argparse.ArgumentParser(description='create and manipulate feedwarrior feeds')
 argparser.add_argument('-l', help='feed log to operate on')
-argparser.add_argument('-c', required=True, type=str, help='configuration file')
+argparser.add_argument('-c', type=str, help='configuration file')
 argparser.add_argument('-v', action='store_true', help='be verbose')
 sub = argparser.add_subparsers()
 # TODO: add subparser to same level flags as main parser
@@ -66,6 +65,7 @@ if args.l != None:
             sys.stderr.write('cannot resolve feed {}\n'.format(args.l))
             sys.exit(1)
 
+
 cmd_mod = None
 if args.command == 'create':
     feed_current = feedwarrior.feed(parent=feed_current)
@@ -73,6 +73,9 @@ if args.command == 'create':
 elif args.command == 'entry':
     cmd_mod = cmd_entry
 elif args.command == 'show' or args.command == None:
+    if feed_current == None:
+        sys.stderr.write('plesae speficy a feed for showing\n')
+        sys.exit(1)
     feed_current = feedwarrior.load_feed(os.path.join(config.feeds_dir, str(feed_current.uuid)))
     cmd_mod = cmd_show
 else:
