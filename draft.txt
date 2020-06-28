@@ -13,8 +13,7 @@ format of log
 
 format of log entry {
 	"id": <uuid>,
-	"caption": <base64>,
-	"contents": [<multipart/mixed>],
+	"body": <multipart/mixed>,
 }
 
 # if set, server should generate random challenge to be signed by key
@@ -41,10 +40,10 @@ each folder must have an ini-formatted file .log with a [LOG] section defining
 	- child uuid (optional)
 
 each log entry is in folder entries named by uuid
+(date, subject and all content is retrieved from multipart)
 each folder much have an ini-formatted file .entry with:
 	- an [ENTRY] section with: log=<uuid>
 	- a [TASKWARRIOR] section with: uuid=<'*'|task-url>
-
 each folder must have a file _content which will be the main text body and the first entry of the multipart 
 each folder MAY have additional files which will be folded down into the multipart
 (for now a perl script will be used to generate the multiparts)
