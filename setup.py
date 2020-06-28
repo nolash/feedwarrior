@@ -6,9 +6,9 @@ setup(
     description='feeds, warrior style',
     author='Louis Holbrook',
     author_email='dev@holbrook.no',
-    packages=['feedwarrior', 'feedwarrior.cmd'],
+    packages=['src/feedwarrior', 'src/feedwarrior.cmd'],
     install_requires=['xdg'],
-    scripts=[
-        'main.py',
+    scripts = [
+        'scripts/feedwarrior',
         ]
 )

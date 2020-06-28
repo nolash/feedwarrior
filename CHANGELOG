@@ -1,5 +1,6 @@
 * 0.1.2
 	- Add simple, readable feed summary
+	- Correct binary script name in setup.py
 * 0.1.1
 	- Add feed alias on creation
 * 0.1.0
