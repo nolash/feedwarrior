@@ -1,5 +1,14 @@
 # standard imports
 import email
+import logging
+import uuid
+import json
+
+# local imports
+import feedwarrior
+
+logg = logging.getLogger()
+
 
 def parse_args(argparser):
     argparser.add_argument('-l', required=True, help='log to add entry to')
@@ -11,14 +20,14 @@ def check_args(args):
     pass
 
 
-def process_as_multipart_file(config, feed, filename):
-    f = open(filename, 'r')
-    m = email.message_from_file(f)
-    f.close()
-    if not m.is_multipart():
-        raise ValueError('{} is not a MIME multipart message'.format(filename))
-    pass
+    return feedwarrior.entry(uu, m.get_payload())
+
 
 def execute(config, feed, args):
-    process_as_mime(config, feed, args.path)
-    pass
+    entry = feedwarrior.entry.from_multipart_file(args.path)
+    entry_serialized = entry.serialize()
+    uu = str(entry.uuid)
+    logg.debug('adding entry {}'.format(uu))
+    f = open(os.path.join(config.entries_dir, uu)
+    json.dump(f, entry_serialized)
+    f.close()
