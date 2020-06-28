@@ -11,9 +11,14 @@ def check_args(args):
     pass
 
 
-def process_as_email(config, feed, payload):
+def process_as_multipart_file(config, feed, filename):
+    f = open(filename, 'r')
+    m = email.message_from_file(f)
+    f.close()
+    if not m.is_multipart():
+        raise ValueError('{} is not a MIME multipart message'.format(filename))
     pass
 
 def execute(config, feed, args):
-    process_as_email(config, feed, args.path)
+    process_as_mime(config, feed, args.path)
     pass
