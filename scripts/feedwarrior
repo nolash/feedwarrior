@@ -41,7 +41,7 @@ args = argparser.parse_args(sys.argv[1:])
 if args.v:
     logging.getLogger().setLevel(logging.DEBUG)
 
-logg.debug('loading config {}'.format(args.c))
+logg.debug('attempting to load config {}'.format(args.c))
 config = feedwarrior.load_config(args.c)
 
 

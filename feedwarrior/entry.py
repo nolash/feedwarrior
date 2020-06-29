@@ -7,7 +7,7 @@ import enum
 import time
 
 # local imports
-from .common import defaulthasher
+from .common import defaulthashers
 
 logg = logging.getLogger()
 
@@ -61,7 +61,7 @@ class entry:
 
    
 
-def from_multipart_file(filename, hasher=defaulthasher):
+def from_multipart_file(filename, hashers=defaulthashers):
 #def process_as_multipart_file(config, feed, filename):
     f = open(filename, 'r')
     m = email.message_from_file(f)
@@ -72,7 +72,12 @@ def from_multipart_file(filename, hasher=defaulthasher):
     # the hasher calculates a uuid from the canonical order of the message contents
     # TODO: currently the canonical order is the order of items in the message. this should
     # rather be the lexiographical order of the hash integer values of the items.
-    htop = hasher()
+    htops = []
+    hparts = {}
+    for h in hashers:
+        hasher = h()
+        htops.append(h())
+        hparts[hasher.name] = hasher
 
     # TODO: this is a naïve parser. If presumes that the message stucture will
     # always be a multipart container on top. Therefore it will always discard the top item
@@ -86,17 +91,21 @@ def from_multipart_file(filename, hasher=defaulthasher):
         if p.get_content_maintype() == 'multipart':
             logg.warn('recursive multipart is not implemented, skipping part {}'.format(i))
 
-        hpart = hasher()
-        hpart.update(p.get_payload(decode=True))
-        psum = hpart.digest()
-        htop.update(psum)
+        for htop in htops:
+            hpart = hparts[htop.name]
+            hpart.update(p.get_payload(decode=True))
+            psum = hpart.digest()
+            htop.update(psum)
 
         i += 1
 
-    msum = htop.digest()
-    uu = uuid.UUID(bytes=msum[:16])
-    m.add_header('X-FEEDWARRIOR-HASH', htop.name)
-    m.add_header('X-FEEDWARRIOR-DIGEST', base64.encodebytes(msum).decode('ascii'))
+    for h in htops:
+        hasher = hparts[h.name]
+        msum = hasher.digest()
+        uu = uuid.UUID(bytes=msum[:16])
+        #m.add_header('X-FEEDWARRIOR-HASH', htop.name)
+        header_key = 'X-FEEDWARRIOR-{}'.format(h.name.upper())
+        m.add_header(header_key, base64.encodebytes(msum).decode('ascii'))
 
     if subject == None:
         subject = str(uu)

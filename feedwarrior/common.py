@@ -2,7 +2,7 @@
 import uuid
 import hashlib
 
-defaulthasher = hashlib.sha256
+defaulthashers = [hashlib.sha256, hashlib.sha1]
 
 def parse_uuid(uu):
     if type(uu).__name__ == 'str':
