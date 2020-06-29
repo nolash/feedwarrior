@@ -42,7 +42,7 @@ def execute(config, feed, args):
            print('----')
 
         if body != None:
-            if args.r:
+            if args.headers:
                 for k in m.keys():
                     print('{}: {}'.format(k, m.get(k)))
             print('{} - {}'.format(ts, j['uuid']))
