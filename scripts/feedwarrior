@@ -26,7 +26,7 @@ argparser = argparse.ArgumentParser(description='create and manipulate feedwarri
 argparser.add_argument('-l', help='feed log to operate on')
 argparser.add_argument('-c', type=str, help='configuration file')
 argparser.add_argument('-v', action='store_true', help='be verbose')
-argparser.add_argument('--headers', action='store_true', help='add headers in output")
+argparser.add_argument('--headers', action='store_true', help='add headers in output')
 sub = argparser.add_subparsers()
 # TODO: add subparser to same level flags as main parser
 sub.dest = 'command'
