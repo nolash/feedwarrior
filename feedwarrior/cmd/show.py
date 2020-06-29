@@ -9,6 +9,8 @@ def parse_args(argparser):
 def check_args(args):
     pass
 
+# TODO: this should call a render method of the entry instead of 
+# dictating how the display format should be
 def execute(config, feed, args):
     i = 0
     while 1:
@@ -39,8 +41,10 @@ def execute(config, feed, args):
         if i > 0:
            print('----')
 
-
         if body != None:
+            if args.r:
+                for k in m.keys():
+                    print('{}: {}'.format(k, m.get(k)))
             print('{} - {}'.format(ts, j['uuid']))
             print(body)
             for a in attachments:

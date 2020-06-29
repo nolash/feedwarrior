@@ -1,6 +1,7 @@
 * 0.1.3
 	- Add multiple hashers for each entry 
 	- Fix bug in config handler that prevents handling of config filenames passed to it
+	- Fix opinionated arg flags before or after subcommand
 * 0.1.2
 	- Add simple, readable feed summary
 	- Correct binary script name in setup.py
