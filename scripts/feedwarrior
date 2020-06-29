@@ -36,8 +36,8 @@ cmd_show.parse_args(sub_show)
 sub_create = sub.add_parser('create', help='create new feed')
 cmd_create.parse_args(sub_create)
 
-
-args = argparser.parse_args(sys.argv[1:])
+args = argparser.parse_known_args()
+args = argparser.parse_args(args[1], args[0])
 if args.v:
     logging.getLogger().setLevel(logging.DEBUG)
 
