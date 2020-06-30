@@ -24,7 +24,7 @@ def execute(config, feed, args):
         t = int(time.mktime(tf))
         tl = time.localtime(t)
         ts = time.strftime('%x %X', tl)
-        body = None
+        body = ''
         attachments = []
         ii = 0
         for p in m.walk():
@@ -35,8 +35,11 @@ def execute(config, feed, args):
             if 'attachment' in p.get_content_disposition():
                 attachments.append('{} ({})'.format(p.get_filename(), p.get_content_type()))
             elif p.get_content_maintype() == 'text':
-                if p.get_filename() == '_content' or body == None:
-                    body = p.get_payload(decode=True).decode('utf-8')
+                subject = p.get('Subject')
+                if subject == None:
+                    subject = p.get_filename()
+                #if p.get_filename() == '_content' or body == None:
+                body += '>>> {}\n\n{}\n\n\n'.format(subject, p.get_payload(decode=True).decode('utf-8'))
 
         if i > 0:
            print('----')
@@ -45,7 +48,7 @@ def execute(config, feed, args):
             if args.headers:
                 for k in m.keys():
                     print('{}: {}'.format(k, m.get(k)))
-            print('{} - {}'.format(ts, j['uuid']))
+            print('{} - {}\n'.format(ts, j['uuid']))
             print(body)
             for a in attachments:
                 print('+ {}'.format(a))
