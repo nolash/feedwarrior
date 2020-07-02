@@ -52,6 +52,8 @@ def execute(config, feed, args):
     f.close()
 
     feeds_entry_path = os.path.join(feeds_entries_dir, uu)
+    if args.z:
+        feeds_entry_path += '.gz'
     os.symlink(entry_path, feeds_entry_path)
 
     feed.add(entry)
