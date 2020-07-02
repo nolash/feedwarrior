@@ -1,3 +1,5 @@
+* 0.3.0 
+	- Add gzip option for entries
 * 0.2.2
 	- Add all inline text content to output in show cmd
 * 0.2.1
