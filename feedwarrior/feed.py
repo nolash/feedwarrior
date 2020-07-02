@@ -6,6 +6,7 @@ import copy
 import time
 import json
 import logging
+import gzip
 
 # local imports
 from feedwarrior.common import parse_uuid
@@ -21,7 +22,12 @@ class filegetter:
 
     def get(self, uu):
         entry_path = os.path.join(self.src, str(uu))
-        f = open(entry_path, 'r')
+        f = None
+        if entry_path[len(entry_path)-3:] == '.gz':
+            logg.debug('uncompressing {}'.format(entry_path))
+            f = gzip.open(entry_path, 'rb')
+        else:
+            f = open(entry_path, 'r')
         c = f.read()
         f.close()
         return c

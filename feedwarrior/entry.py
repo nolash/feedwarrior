@@ -5,6 +5,7 @@ import logging
 import base64
 import enum
 import time
+import gzip
 
 # local imports
 from .common import defaulthashers
@@ -63,7 +64,11 @@ class entry:
 
 def from_multipart_file(filename, hashers=defaulthashers):
 #def process_as_multipart_file(config, feed, filename):
-    f = open(filename, 'r')
+    f = None
+    try:
+        f = open(filename, 'r')
+    except FileNotFoundError:
+        f = gzip.open(filename + '.gz', 'rb')
     m = email.message_from_file(f)
     f.close()
     if not m.is_multipart():
