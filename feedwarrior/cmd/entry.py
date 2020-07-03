@@ -33,13 +33,10 @@ def execute(config, feed, args):
             uu = feedwarrior.common.parse_uuid(t)
             entry.add_extension(feedwarrior.extension.TASKWARRIOR, uu)
 
-    entry_serialized = entry.serialize()
     uu = str(entry.uuid)
     logg.debug('adding entry {}'.format(uu))
     
     fa = fileadapter(config.data_dir, feed.uuid)
-
-    entry_json = json.dumps(entry_serialized)
-    fa.put(entry.uuid, entry_json.encode('utf-8'), args.z)
+    fa.put(entry.uuid, entry, args.z)
    
     feed.add(entry)

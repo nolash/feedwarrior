@@ -45,7 +45,11 @@ class fileadapter:
         return c
 
 
-    def put(self, uu, contents_bytes, **kwargs):
+    def put(self, uu, entry, **kwargs):
+
+        entry_serialized = entry.serialize()
+        entry_json = json.dumps(entry_serialized)
+
         entry_path = os.path.join(self.src, 'entries', str(uu))
         if os.path.exists(entry_path) or os.path.exists(entry_path + '.gz'):
             raise FileExistsError('record {} already exists'.format(str(uu)))
