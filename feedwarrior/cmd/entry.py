@@ -37,6 +37,6 @@ def execute(config, feed, args):
     logg.debug('adding entry {}'.format(uu))
     
     fa = fileadapter(config.data_dir, feed.uuid)
-    fa.put(entry.uuid, entry, args.z)
+    fa.put(entry.uuid, entry, compress=args.z)
    
     feed.add(entry)
