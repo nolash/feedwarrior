@@ -9,6 +9,7 @@ import gzip
 # local imports
 import feedwarrior
 from feedwarrior import entry as feedentry
+from feedwarrior.adapters import fileadapter
 
 logg = logging.getLogger()
 
@@ -35,25 +36,10 @@ def execute(config, feed, args):
     entry_serialized = entry.serialize()
     uu = str(entry.uuid)
     logg.debug('adding entry {}'.format(uu))
-    entry_path = os.path.join(config.entries_dir, uu)
-    f = None
-    if args.z:
-        entry_path += '.gz'
-        f = gzip.open(entry_path, 'xb')
-    else:
-        f = open(entry_path, 'x')
-    feeds_entries_dir = os.path.join(config.feeds_dir, str(feed.uuid), 'entries')
-    try:
-        os.mkdir(feeds_entries_dir)
-    except FileExistsError:
-        pass
+    
+    fa = fileadapter(config.feeds_dir, feed.uuid)
+
     entry_json = json.dumps(entry_serialized)
-    f.write(entry_json.encode('utf-8'))
-    f.close()
-
-    feeds_entry_path = os.path.join(feeds_entries_dir, uu)
-    if args.z:
-        feeds_entry_path += '.gz'
-    os.symlink(entry_path, feeds_entry_path)
-
+    fa.put(entry.uuid, entry_json.encode('utf-8'), args.z)
+   
     feed.add(entry)

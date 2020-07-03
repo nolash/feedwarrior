@@ -10,27 +10,9 @@ import gzip
 
 # local imports
 from feedwarrior.common import parse_uuid
+from feedwarrior.adapters import fileadapter
 
 logg = logging.getLogger()
-
-
-class filegetter:
-
-    def __init__(self, source_directory):
-        self.src = source_directory
-
-
-    def get(self, uu):
-        entry_path = os.path.join(self.src, str(uu))
-        f = None
-        if entry_path[len(entry_path)-3:] == '.gz':
-            logg.debug('uncompressing {}'.format(entry_path))
-            f = gzip.open(entry_path, 'rb')
-        else:
-            f = open(entry_path, 'r')
-        c = f.read()
-        f.close()
-        return c
 
 
 
@@ -140,7 +122,7 @@ def load(path):
     for entry in os.listdir(feed_entries_path):
         feed_loaded.entries.append(entry)
 
-    fg = filegetter(os.path.join(path, 'entries'))
+    fg = fileadapter(os.path.join(path, 'entries'), uu)
     feed_loaded.set_getter(fg)
 
     return feed_loaded
