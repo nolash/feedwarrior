@@ -49,6 +49,7 @@ class feed:
 
 
     def add(self, entry):
+        logg.debug('adding entry {}'.format(entry))
         self.entries.append(entry)
 
 
@@ -65,6 +66,7 @@ class feed:
 
 
     def _sort_entries(self):
+        logg.debug('entries for {}'.format(self.uuid), self.entries)
         new_entries = []
         for e in self.entries:
             entry = self.getter.get(e)
@@ -80,7 +82,6 @@ class feed:
 
         self.entries = []
         for ne in new_entries:
-            logg.debug(ne)
             e = ne.split('_', maxsplit=1)
             self.entries.append(e[1])
 
