@@ -32,7 +32,7 @@ class fileadapter:
         self.feeds_uuid = uu
 
 
-    def get(self, uu):
+    def get(self, uu, **kwargs):
         entry_path = os.path.join(self.src, 'entries', str(uu))
         f = None
         if entry_path[len(entry_path)-3:] == '.gz':
@@ -45,12 +45,12 @@ class fileadapter:
         return c
 
 
-    def put(self, uu, contents_bytes, compress=False):
+    def put(self, uu, contents_bytes, **kwargs):
         entry_path = os.path.join(self.src, 'entries', str(uu))
         if os.path.exists(entry_path) or os.path.exists(entry_path + '.gz'):
             raise FileExistsError('record {} already exists'.format(str(uu)))
         f = None
-        if compress:
+        if kwargs['compress']:
             entry_path += '.gz'
             f = gzip.open(entry_path, 'xb')
         else:
@@ -60,6 +60,6 @@ class fileadapter:
         f.close()
 
         feeds_entry_path = os.path.join(self.src, str(self.feeds_uuid), 'entries', str(uu))
-        if compress:
+        if kwargs['compress']:
             feeds_entry_path += '.gz'
         os.symlink(entry_path, feeds_entry_path)
