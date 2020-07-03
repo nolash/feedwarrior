@@ -1,3 +1,6 @@
+* 0.4.0
+	- Consolidate put and get methods on same adapter interface
+	- Resolve uncompressed path bug 
 * 0.3.0 
 	- Add gzip option for entries
 * 0.2.2

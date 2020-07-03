@@ -106,7 +106,8 @@ class feed:
 
 # TODO: add input checking for timestamps
 # TODO: check state of symlink index
-def load(path):
+def load(data_dir, uu):
+    path = os.path.join(data_dir, 'feeds', str(uu))
     feed_meta_path = os.path.join(path, '.log')
     f = open(feed_meta_path, 'r')
     o = json.load(f)
@@ -122,7 +123,7 @@ def load(path):
     for entry in os.listdir(feed_entries_path):
         feed_loaded.entries.append(entry)
 
-    fg = fileadapter(os.path.join(path, 'entries'), uu)
+    fg = fileadapter(data_dir, uu)
     feed_loaded.set_getter(fg)
 
     return feed_loaded

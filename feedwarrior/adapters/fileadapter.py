@@ -12,6 +12,7 @@ class fileadapter:
             os.mkdir(os.path.join(db_directory, 'feeds'))
         except FileExistsError:
             pass
+
         try:
             os.mkdir(os.path.join(db_directory, 'feeds', str(uu)))
         except FileExistsError:
@@ -21,12 +22,18 @@ class fileadapter:
             os.mkdir(os.path.join(db_directory, 'entries'))
         except FileExistsError:
             pass
+
+        try:
+            os.mkdir(os.path.join(db_directory,  'feeds', str(uu), 'entries'))
+        except FileExistsError:
+            pass
+
         self.src = db_directory
         self.feeds_uuid = uu
 
 
     def get(self, uu):
-        entry_path = os.path.join(self.src, str(uu))
+        entry_path = os.path.join(self.src, 'entries', str(uu))
         f = None
         if entry_path[len(entry_path)-3:] == '.gz':
             logg.debug('uncompressing {}'.format(entry_path))

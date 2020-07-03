@@ -77,7 +77,7 @@ elif args.command == 'show' or args.command == None:
     if feed_current == None:
         sys.stderr.write('plesae speficy a feed for showing\n')
         sys.exit(1)
-    feed_current = feedwarrior.load_feed(os.path.join(config.feeds_dir, str(feed_current.uuid)))
+    feed_current = feedwarrior.load_feed(config.data_dir, feed_current.uuid)
     cmd_mod = cmd_show
 else:
     sys.stderr.write('invalid command {}\n'.format(args.command))

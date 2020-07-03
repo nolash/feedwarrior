@@ -37,7 +37,7 @@ def execute(config, feed, args):
     uu = str(entry.uuid)
     logg.debug('adding entry {}'.format(uu))
     
-    fa = fileadapter(config.feeds_dir, feed.uuid)
+    fa = fileadapter(config.data_dir, feed.uuid)
 
     entry_json = json.dumps(entry_serialized)
     fa.put(entry.uuid, entry_json.encode('utf-8'), args.z)
