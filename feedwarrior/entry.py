@@ -63,7 +63,6 @@ class entry:
    
 
 def from_multipart_file(filename, hashers=defaulthashers):
-#def process_as_multipart_file(config, feed, filename):
     f = None
     try:
         f = open(filename, 'r')

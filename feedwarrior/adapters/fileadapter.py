@@ -2,8 +2,10 @@
 import os
 import gzip
 import logging
+import json
 
 logg = logging.getLogger()
+
 
 class fileadapter:
 
@@ -45,12 +47,17 @@ class fileadapter:
         return c
 
 
-    def put(self, uu, contents_bytes, **kwargs):
+    def put(self, uu, entry, **kwargs):
+
+        entry_serialized = entry.serialize()
+        entry_json = json.dumps(entry_serialized)
+        contents_bytes = entry_json.encode('utf-8')
+
         entry_path = os.path.join(self.src, 'entries', str(uu))
         if os.path.exists(entry_path) or os.path.exists(entry_path + '.gz'):
             raise FileExistsError('record {} already exists'.format(str(uu)))
         f = None
-        if kwargs['compress']:
+        if kwargs.get('compress') != None:
             entry_path += '.gz'
             f = gzip.open(entry_path, 'xb')
         else:
@@ -59,7 +66,7 @@ class fileadapter:
         f.write(contents_bytes)
         f.close()
 
-        feeds_entry_path = os.path.join(self.src, str(self.feeds_uuid), 'entries', str(uu))
-        if kwargs['compress']:
+        feeds_entry_path = os.path.join(self.src, 'feeds', str(self.feeds_uuid), 'entries', str(uu))
+        if kwargs.get('compress') != None:
             feeds_entry_path += '.gz'
         os.symlink(entry_path, feeds_entry_path)
