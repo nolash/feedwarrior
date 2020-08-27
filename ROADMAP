@@ -1,3 +1,2 @@
-- Add attachments to add command
 - Auto-resolve taskwarrior task numbers to uuids and add to X header
 - Sign entries with PGP
