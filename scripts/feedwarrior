@@ -18,9 +18,17 @@ from feedwarrior.cmd import create as cmd_create
 from feedwarrior.cmd import entry as cmd_entry
 from feedwarrior.cmd import show as cmd_show
 from feedwarrior.cmd import ls as cmd_list
+from feedwarrior.cmd import add as cmd_add
 
 logging.basicConfig(level=logging.ERROR)
 logg = logging.getLogger()
+
+
+def matches_part(full, part):
+    if len(part) > len(full):
+        return False
+    return full[:len(part)] == part
+
 
 
 argparser = argparse.ArgumentParser(description='create and manipulate feedwarrior feeds')
@@ -39,7 +47,8 @@ sub_create = sub.add_parser('create', help='create new feed')
 cmd_create.parse_args(sub_create)
 sub_list = sub.add_parser('list', help='list feeds')
 cmd_list.parse_args(sub_list)
-
+sub_add = sub.add_parser('add', help='add new entry with editor')
+cmd_add.parse_args(sub_add)
 
 
 args = argparser.parse_known_args()
@@ -72,20 +81,23 @@ if args.l != None:
             sys.exit(1)
 
 
+
 cmd_mod = None
-if args.command == 'create':
-    feed_current = feedwarrior.feed(parent=feed_current)
-    cmd_mod = cmd_create
-elif args.command == 'entry':
-    cmd_mod = cmd_entry
-elif args.command == 'list':
-    cmd_mod = cmd_list
-elif args.command == 'show' or args.command == None:
+if args.command == None or matches_part('show', args.command):
     if feed_current == None:
         sys.stderr.write('plesae speficy a feed for showing\n')
         sys.exit(1)
     feed_current = feedwarrior.load_feed(config.data_dir, feed_current.uuid)
     cmd_mod = cmd_show
+elif matches_part('create', args.command):
+    feed_current = feedwarrior.feed(parent=feed_current)
+    cmd_mod = cmd_create
+elif matches_part('entry', args.command):
+    cmd_mod = cmd_entry
+elif matches_part('list', args.command) or args.command == 'ls':
+    cmd_mod = cmd_list
+elif matches_part('add', args.command):
+    cmd_mod = cmd_add
 else:
     sys.stderr.write('invalid command {}\n'.format(args.command))
     sys.exit(1)

@@ -52,6 +52,7 @@ class entry:
         logg.debug('complete message {}'.format(self.message))
 
         d = email.utils.parsedate(self.message.get('Date'))
+        logg.debug('date {} {}'.format(d, self.message.get('Date')))
         ts = time.mktime(d)
 
         return {
@@ -70,6 +71,10 @@ def from_multipart_file(filename, hashers=defaulthashers):
         f = gzip.open(filename + '.gz', 'rb')
     m = email.message_from_file(f)
     f.close()
+    return from_multipart(m, hashers)
+
+
+def from_multipart(m, hashers=defaulthashers):
     if not m.is_multipart():
         raise ValueError('{} is not a MIME multipart message'.format(filename))
 

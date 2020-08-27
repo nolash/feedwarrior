@@ -66,7 +66,7 @@ class feed:
 
 
     def _sort_entries(self):
-        logg.debug('entries for {}'.format(self.uuid), self.entries)
+        logg.debug('entries for {} {}'.format(self.uuid, self.entries))
         new_entries = []
         for e in self.entries:
             entry = self.getter.get(e)

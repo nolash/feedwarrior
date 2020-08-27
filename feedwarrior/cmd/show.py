@@ -2,6 +2,10 @@
 import json
 import email
 import time
+import sys
+import logging
+
+logg = logging.getLogger(__file__)
 
 def parse_args(argparser):
     pass
@@ -16,7 +20,7 @@ def execute(config, feed, args):
     while 1:
         try:
             e = feed.next_entry()
-        except IndexError:
+        except IndexError as e:
             break
         j = json.loads(e)
         m = email.message_from_string(j['payload'])
@@ -42,16 +46,16 @@ def execute(config, feed, args):
                 body += '>>> {}\n\n{}\n\n\n'.format(subject, p.get_payload(decode=True).decode('utf-8'))
 
         if i > 0:
-           print('----')
+           sys.stdout.write('----\n')
 
         if body != None:
             if args.headers:
                 for k in m.keys():
                     print('{}: {}'.format(k, m.get(k)))
-            print('{} - {}\n'.format(ts, j['uuid']))
-            print(body)
+            sys.stdout.write('{} - {}\n'.format(ts, j['uuid']))
+            sys.stdout.write('{}'.format(body))
             for a in attachments:
-                print('+ {}'.format(a))
+                sys.stdout.write('+ {}'.format(a))
 
         i += 1
-    pass
+    sys.stdout.flush()
