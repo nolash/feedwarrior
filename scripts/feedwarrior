@@ -17,6 +17,7 @@ import feedwarrior
 from feedwarrior.cmd import create as cmd_create
 from feedwarrior.cmd import entry as cmd_entry
 from feedwarrior.cmd import show as cmd_show
+from feedwarrior.cmd import ls as cmd_list
 
 logging.basicConfig(level=logging.ERROR)
 logg = logging.getLogger()
@@ -36,6 +37,10 @@ sub_show = sub.add_parser('show', help='view feed log')
 cmd_show.parse_args(sub_show)
 sub_create = sub.add_parser('create', help='create new feed')
 cmd_create.parse_args(sub_create)
+sub_list = sub.add_parser('list', help='list feeds')
+cmd_list.parse_args(sub_list)
+
+
 
 args = argparser.parse_known_args()
 args = argparser.parse_args(args[1], args[0])
@@ -73,6 +78,8 @@ if args.command == 'create':
     cmd_mod = cmd_create
 elif args.command == 'entry':
     cmd_mod = cmd_entry
+elif args.command == 'list':
+    cmd_mod = cmd_list
 elif args.command == 'show' or args.command == None:
     if feed_current == None:
         sys.stderr.write('plesae speficy a feed for showing\n')
