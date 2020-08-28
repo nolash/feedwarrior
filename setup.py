@@ -6,7 +6,10 @@ setup(
     description='feeds, warrior style',
     author='Louis Holbrook',
     author_email='dev@holbrook.no',
-    packages=['feedwarrior', 'feedwarrior.cmd'],
+    packages=[
+        'feedwarrior',
+        'feedwarrior.cmd',
+        'feedwarrior.adapters],
     install_requires=[
         'xdg'
         ],
