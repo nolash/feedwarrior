@@ -9,9 +9,10 @@ setup(
     packages=[
         'feedwarrior',
         'feedwarrior.cmd',
-        'feedwarrior.adapters],
+        'feedwarrior.adapters'
+        ],
     install_requires=[
-        'xdg'
+        'pyxdg>=0.26'
         ],
     scripts = [
         'scripts/feedwarrior',
