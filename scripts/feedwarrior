@@ -33,7 +33,7 @@ def matches_part(full, part):
 
 argparser = argparse.ArgumentParser(description='create and manipulate feedwarrior feeds')
 argparser.add_argument('-l', help='feed log to operate on')
-argparser.add_argument('-c', type=str, help='configuration file')
+argparser.add_argument('-c', type=str, default='config.ini', help='configuration file')
 argparser.add_argument('-v', action='store_true', help='be verbose')
 argparser.add_argument('--headers', action='store_true', help='add headers in output')
 sub = argparser.add_subparsers()
@@ -108,7 +108,9 @@ try:
     os.makedirs(os.path.join(config.feeds_dir, 'names'), mode=0o777, exist_ok=False)
     logg.debug('creating datadir {}'.format(config.data_dir))
 except FileExistsError as e:
-    logg.debug('using datadir {}'.format(config.data_dir))
+    logg.debug('found existing datadir {}'.format(config.data_dir))
+
+cmd_mod.check_args(args)
 
 if __name__ == '__main__':
     cmd_mod.execute(config, feed_current, args)
