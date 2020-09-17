@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='feedwarrior',
-    version='0.5.0',
+    version='0.5.1',
     description='feeds, warrior style',
     author='Louis Holbrook',
     author_email='dev@holbrook.no',

@@ -65,6 +65,7 @@ class feed:
         return o
 
 
+    # TODO: use index instead
     def _sort_entries(self):
         logg.debug('entries for {} {}'.format(self.uuid, self.entries))
         new_entries = []
@@ -81,6 +82,7 @@ class feed:
             new_entries.append('_'.join([ts, e]))
 
         self.entries = []
+        new_entries.sort()
         for ne in new_entries:
             e = ne.split('_', maxsplit=1)
             self.entries.append(e[1])

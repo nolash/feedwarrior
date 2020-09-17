@@ -55,7 +55,7 @@ def execute(config, feed, args):
             sys.stdout.write('{} - {}\n'.format(ts, j['uuid']))
             sys.stdout.write('{}'.format(body))
             for a in attachments:
-                sys.stdout.write('+ {}'.format(a))
+                sys.stdout.write('+ {}\n'.format(a))
 
         i += 1
     sys.stdout.flush()

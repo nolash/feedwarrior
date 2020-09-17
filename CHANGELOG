@@ -1,3 +1,5 @@
+* 0.5.1
+	- Fix sort on date
 * 0.5.0 
 	- Add taskwarrior uuid lookup and id to uuid resolve
 	- Abort add on empty input
