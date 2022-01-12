@@ -22,18 +22,18 @@ class config:
    
         # TODO: this make no sense
         # if filename == None:
-        config_paths = BaseDirectory.load_config_paths('feedwarrior')
+        config_paths += BaseDirectory.load_config_paths('feedwarrior')
 
         if filename != None:
             for p in config_paths:
-                try:
-                    cp.read(os.path.join(p, filename))
-                    logg.info('successfully read config {}'.format(p))
-                    config_loaded = True
-                    break
-                except FileNotFoundError:
-                    logg.debug('config file {} not found'.format(p))
-                    pass
+                config_path = os.path.join(p, filename)
+                r = cp.read(config_path)
+                if len(r) == 0:
+                    logg.warning("config file in path {} not found".format(config_path))
+                    continue
+
+                logg.info('successfully read config {}'.format(p))
+                config_loaded = True
 
         if cp.has_option('FEEDWARRIOR', 'datadir'):
             self.data_dir = cp['FEEDWARRIOR']['datadir']
