@@ -1,2 +1,6 @@
-- Sign entries with PGP
-- filter entries by task 
+* 0.5.2
+	- Settable date for updates
+* Unscheduled
+	- Sign entries with PGP
+	- filter entries by task 
+	- format hint for main log entry text

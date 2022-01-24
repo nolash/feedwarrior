@@ -1,4 +1,15 @@
 from setuptools import setup
+import os
+
+requirements = []
+f = open('requirements.txt', 'r')
+while True:
+    l = f.readline()
+    if l == '':
+        break
+    requirements.append(l.rstrip())
+f.close()
+
 
 setup(
     name='feedwarrior',
@@ -12,8 +23,7 @@ setup(
         'feedwarrior.adapters'
         ],
     install_requires=[
-        'pyxdg>=0.26',
-        'tasklib>=1.3.0,<2.0.0',
+        requirements,
         ],
     scripts = [
         'scripts/feedwarrior',
