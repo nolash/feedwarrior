@@ -13,7 +13,7 @@ f.close()
 
 setup(
     name='feedwarrior',
-    version='0.5.1',
+    version='0.5.2',
     description='feeds, warrior style',
     author='Louis Holbrook',
     author_email='dev@holbrook.no',
