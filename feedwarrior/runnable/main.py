@@ -1,0 +1,124 @@
+#!/usr/bin/python
+
+# Author: Louis Holbrook <dev@holbrook.no> (https://holbrook.no)
+# License: GPLv3
+# Description: Work log tool
+
+# standard imports
+import os
+import sys
+import argparse
+import configparser
+import json
+import logging
+
+# local imports
+import feedwarrior
+from feedwarrior.cmd import create as cmd_create
+from feedwarrior.cmd import entry as cmd_entry
+from feedwarrior.cmd import show as cmd_show
+from feedwarrior.cmd import ls as cmd_list
+from feedwarrior.cmd import add as cmd_add
+from feedwarrior.cmd import attach as cmd_attach
+
+logging.basicConfig(level=logging.ERROR)
+logg = logging.getLogger()
+
+
+def matches_part(full, part):
+    if len(part) > len(full):
+        return False
+    return full[:len(part)] == part
+
+
+
+argparser = argparse.ArgumentParser(description='create and manipulate feedwarrior feeds')
+argparser.add_argument('-l', help='feed log to operate on')
+argparser.add_argument('-c', type=str, default='config.ini', help='configuration file')
+argparser.add_argument('-v', action='store_true', help='be verbose')
+argparser.add_argument('--headers', action='store_true', help='add headers in output')
+sub = argparser.add_subparsers()
+# TODO: add subparser to same level flags as main parser
+sub.dest = 'command'
+sub_entry = sub.add_parser('entry', help='add entry to feed')
+cmd_entry.parse_args(sub_entry)
+sub_show = sub.add_parser('show', help='view feed log')
+cmd_show.parse_args(sub_show)
+sub_create = sub.add_parser('create', help='create new feed')
+cmd_create.parse_args(sub_create)
+sub_list = sub.add_parser('list', help='list feeds')
+cmd_list.parse_args(sub_list)
+sub_add = sub.add_parser('add', help='add new entry with editor')
+cmd_add.parse_args(sub_add)
+sub_attach = sub.add_parser('attach', help='attach file to existing entry')
+cmd_attach.parse_args(sub_attach)
+
+
+args = argparser.parse_known_args()
+args = argparser.parse_args(args[1], args[0])
+if args.v:
+    logging.getLogger().setLevel(logging.DEBUG)
+
+logg.debug('attempting to load config {}'.format(args.c))
+config = feedwarrior.load_config(args.c)
+
+
+def get_feed_by_name(s):
+    index_path = os.path.join(config.feeds_dir, 'names', s)
+    resolved_path = os.path.realpath(index_path)
+    os.stat(resolved_path)
+    logg.debug('feed path {} resolves to {}'.format(index_path, resolved_path))
+    return os.path.basename(resolved_path)
+
+
+
+def main():
+    feed_current = None
+    if args.l != None:
+        try:
+            uu = feedwarrior.common.parse_uuid(args.l)
+            feed_current = feedwarrior.feed(uu)
+        except ValueError:
+            try:
+                uu = get_feed_by_name(args.l)
+                feed_current = feedwarrior.feed(uu)
+            except FileNotFoundError as e:
+                sys.stderr.write('cannot resolve feed {}\n'.format(args.l))
+                sys.exit(1)
+
+    cmd_mod = None
+    if args.command == None or matches_part('show', args.command):
+        if feed_current == None:
+            sys.stderr.write('plesae speficy a feed for showing\n')
+            sys.exit(1)
+        feed_current = feedwarrior.load_feed(config.data_dir, feed_current.uuid)
+        cmd_mod = cmd_show
+    elif matches_part('create', args.command):
+        feed_current = feedwarrior.feed(parent=feed_current)
+        cmd_mod = cmd_create
+    elif matches_part('entry', args.command):
+        cmd_mod = cmd_entry
+    elif matches_part('list', args.command) or args.command == 'ls':
+        cmd_mod = cmd_list
+    elif matches_part('add', args.command):
+        cmd_mod = cmd_add
+    elif matches_part('attach', args.command):
+        cmd_mod = cmd_attach
+    else:
+        sys.stderr.write('invalid command {}\n'.format(args.command))
+        sys.exit(1)
+
+    try:
+        os.makedirs(config.entries_dir, mode=0o777, exist_ok=False)
+        os.makedirs(config.feeds_dir, mode=0o777, exist_ok=False)
+        os.makedirs(os.path.join(config.feeds_dir, 'names'), mode=0o777, exist_ok=False)
+        logg.debug('creating datadir {}'.format(config.data_dir))
+    except FileExistsError as e:
+        logg.debug('found existing datadir {}'.format(config.data_dir))
+
+    cmd_mod.check_args(args)
+    cmd_mod.execute(config, feed_current, args)
+
+
+if __name__ == '__main__':
+    main()

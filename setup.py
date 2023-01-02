@@ -20,12 +20,19 @@ setup(
     packages=[
         'feedwarrior',
         'feedwarrior.cmd',
-        'feedwarrior.adapters'
+        'feedwarrior.adapters',
+        'feedwarrior.runnable',
         ],
     install_requires=[
         requirements,
         ],
-    scripts = [
-        'scripts/feedwarrior',
-        ]
+    #scripts = [
+    #    'scripts/feedwarrior',
+    #    ],
+    entry_points = {
+        'console_scripts': [
+            'feedwarrior = feedwarrior.runnable.main:main',
+            ],
+        },
+    license_files = ('LICENSE',),
 )

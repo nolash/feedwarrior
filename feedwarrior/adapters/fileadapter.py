@@ -34,34 +34,67 @@ class fileadapter:
         self.feeds_uuid = uu
 
 
-    def get(self, uu, **kwargs):
+    def get_raw_fp(self, fp):
+        return open(fp, 'r')
+
+
+    def get_gz_fp(self, fp):
+        fp += '.gz'
+        logg.debug('uncompressing {}'.format(fp))
+        return gzip.open(fp, 'rb')
+        #return open(fp, 'r')
+
+    
+    def get_with_type(self, uu, **kwargs):
         entry_path = os.path.join(self.src, 'entries', str(uu))
         f = None
-        if entry_path[len(entry_path)-3:] == '.gz':
-            logg.debug('uncompressing {}'.format(entry_path))
-            f = gzip.open(entry_path, 'rb')
-        else:
-            f = open(entry_path, 'r')
+        typ = 'plain'
+        if entry_path[-3:] == '.gz':
+            entry_path = entry_path[:-3]
+        logg.debug('etnry {}'.format(entry_path))
+        try:
+            f = self.get_raw_fp(entry_path)
+        except FileNotFoundError:
+            f = self.get_gz_fp(entry_path)
+            typ = 'gzip'
         c = f.read()
         f.close()
-        return c
+        return (c, typ,)
 
 
-    def put(self, uu, entry, **kwargs):
+    def get(self, uu, **kwargs):
+        r = self.get_with_type(uu, **kwargs)
+        return r[0]
+
+#        entry_path = os.path.join(self.src, 'entries', str(uu))
+#        f = None
+#        try:
+#            f = self.get_raw_fp(entry_path)
+#        except FileNotFoundError:
+#            f = self.get_gz_fp(entry_path)
+#        c = f.read()
+#        f.close()
+#        return c
+
+
+    def put(self, uu, entry, replace=False, **kwargs):
+        fm = 'xb'
+        if replace:
+            fm = 'wb'
 
         entry_serialized = entry.serialize()
         entry_json = json.dumps(entry_serialized)
         contents_bytes = entry_json.encode('utf-8')
 
         entry_path = os.path.join(self.src, 'entries', str(uu))
-        if os.path.exists(entry_path) or os.path.exists(entry_path + '.gz'):
+        if not replace and (os.path.exists(entry_path) or os.path.exists(entry_path + '.gz')):
             raise FileExistsError('record {} already exists'.format(str(uu)))
         f = None
         if kwargs.get('compress') != None:
             entry_path += '.gz'
-            f = gzip.open(entry_path, 'xb')
+            f = gzip.open(entry_path, fm)
         else:
-            f = open(entry_path, 'xb')
+            f = open(entry_path, fm)
             
         f.write(contents_bytes)
         f.close()
