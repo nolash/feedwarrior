@@ -1,6 +1,6 @@
-* 0.5.2
-	- Settable date for updates
 * Unscheduled
 	- Sign entries with PGP
-	- filter entries by task 
-	- format hint for main log entry text
+	- Filter entries by task 
+	- Format hint for main log entry text
+	- Truncate listings by age or amount
+	- Modify entry digest on attach
