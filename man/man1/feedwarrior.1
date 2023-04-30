@@ -1,0 +1,139 @@
+.TH feedwarrior 1
+
+
+.SH NAME
+feedwarrior - Feeds, warrior style
+
+
+.SH DESCRIPTION
+
+Inspired by
+.UR https\://taskwarrior.org
+.UE ,
+this project seeks to simplify the maintenance of engineering work logs.
+
+It maintains a collection of logs.
+
+Entries of each individual log has core text content. Additionally, every entry may have any number of file attachments associated with it.
+
+
+.SH SYNOPSIS
+
+.SY feedwarrior
+add [ -c config_file] [ -z ] [ --task-id ] [ --task-uuid ] < -s subject >
+.YS
+
+.SY feedwarrior
+attach [ -c config_file] [ -z ] < -e entry > file
+.YS
+
+.SY feedwarrior
+create [ -c config_file] [ --alias name ]
+.YS
+
+.SY feedwarrior
+entry [ -c config_file] [ -z ] [ --task-id ] [ --task-uuid ] < -s subject > < path_to_content >
+.YS
+
+.SY feedwarrior
+list [ -c config_file]
+.YS
+
+.SY feedwarrior
+show [ -c config_file] < -l feed_id >
+.YS
+
+
+.SS Common options
+
+.TP
+.BI -l log_id
+Log id to operate on. May be the full uuid or the alias defined at creation time.
+
+.TP
+.BI -c config_file
+Load configuration from file.
+
+.SS Options for show
+
+.TP
+.B --headers
+Include multipart-headers in output.
+
+.SS Options for attach
+
+.TP
+.BI -e entry_id
+uuid of entry to attach file to.
+
+.SS Options for create
+
+.TP
+.BI --alias alias_id
+Create log id alias that may be used as argument to \fB-l\fP for future operations.
+
+
+.SS Options for add and entry
+
+.TP
+.BI -s subject
+Entry subject.
+
+.TP
+.BI --task-id id
+Associate the log entry with the given taskwarrior numeric id. This is a quasi-magical instruction which will resolve to the actual taskwarrior uuid.
+
+.TP
+.BI --task-uuid uuid
+Associate the log entry with the given taskwarrior numeric uuid.
+
+
+.SH ATTACHMENTS
+
+Both \fBfeedwarrior add\fP and \fBfeedwarrior entry\fP will return the created entry id.
+
+This id can be used further with the \fB-e\fP flag for attachments.
+
+Any file in any format may be an attachment. The feedwarrior tool imposes little if no restriction on what data qualifies as valid attachment data.
+
+
+.SH INTERACTIVE ENTRIES
+
+The \fBfeedwarrior add\fP command enables interactive definition of textual update entry contents.
+
+It will open an editor (at the moment hardcoded to \fBvim\fP) to receive the contents.
+
+
+.SH EXAMPLE
+
+.EX
+feedwarrior create --alias myfeed
+echo "this is some content" > /tmp/foo.txt
+entry=`feedwarrior entry -s "first update" /tmp/foo.txt`
+feedwarrior attach -e $entry <attachment_file>
+.EE
+
+
+.SH LICENSE
+
+This documentation and its source is licensed under the Creative Commons Attribution-Sharealike 4.0 International license.
+
+The source code of the tool this documentation describes is licensed under the GNU General Public License 3.0.
+
+
+.SH COPYRIGHT AND CONTACT
+
+.MT dev@holbrook.no
+Louis Holbrook
+.ME
+
+.UR https://holbrook.no
+.UE https://holbrook.no
+
+.P
+PGP: 59A844A484AC11253D3A3E9DCDCBD24DD1D0E001
+
+
+.SH SOURCE CODE
+
+https://holbrook.no/src/feedwarrior/log.htm ggj

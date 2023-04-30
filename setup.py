@@ -26,4 +26,5 @@ setup(
             'feedwarrior = feedwarrior.runnable.main:main',
             ],
         },
+    data_files=[("man/man1", ["man/man1/feedwarrior.1"],)],
 )
