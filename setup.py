@@ -10,6 +10,9 @@ while True:
     requirements.append(l.rstrip())
 f.close()
 
+f = open('README.md', 'r')
+description = f.read()
+f.close()
 
 setup(
     packages=[
@@ -27,4 +30,6 @@ setup(
             ],
         },
     data_files=[("man/man1", ["man/man1/feedwarrior.1"],)],
+    long_description=description,
+    long_description_content_type='text/markdown',
 )

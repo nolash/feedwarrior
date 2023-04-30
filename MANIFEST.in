@@ -1,1 +1,1 @@
-include *requirements.txt man/**
+include *requirements.txt README* man/**
