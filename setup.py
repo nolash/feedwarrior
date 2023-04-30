@@ -12,11 +12,6 @@ f.close()
 
 
 setup(
-    name='feedwarrior',
-    version='0.5.3',
-    description='feeds, warrior style',
-    author='Louis Holbrook',
-    author_email='dev@holbrook.no',
     packages=[
         'feedwarrior',
         'feedwarrior.cmd',
@@ -26,13 +21,9 @@ setup(
     install_requires=[
         requirements,
         ],
-    #scripts = [
-    #    'scripts/feedwarrior',
-    #    ],
     entry_points = {
         'console_scripts': [
             'feedwarrior = feedwarrior.runnable.main:main',
             ],
         },
-    license_files = ('LICENSE',),
 )

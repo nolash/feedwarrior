@@ -1,3 +1,9 @@
+* 0.5.4
+	- Package for pypi.org
+* 0.5.3
+	- Package
+* 0.5.2
+	- Alert when running with missing configuration
 * 0.5.1
 	- Fix sort on date
 * 0.5.0 
