@@ -1,5 +1,6 @@
 * 0.5.5
 	- Add man page
+	- Return entry uuid on add and entry subcommands
 * 0.5.4
 	- Package for pypi.org
 * 0.5.3

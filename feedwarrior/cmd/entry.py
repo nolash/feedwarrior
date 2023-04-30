@@ -48,3 +48,4 @@ def execute(config, feed, args):
     fa.put(entry.uuid, entry, compress=args.z)
    
     feed.add(entry)
+    return str(entry.uuid)

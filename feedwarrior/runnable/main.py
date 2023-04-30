@@ -117,7 +117,9 @@ def main():
         logg.debug('found existing datadir {}'.format(config.data_dir))
 
     cmd_mod.check_args(args)
-    cmd_mod.execute(config, feed_current, args)
+    r = cmd_mod.execute(config, feed_current, args)
+    if r != None:
+        print(r)
 
 
 if __name__ == '__main__':

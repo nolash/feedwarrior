@@ -10,9 +10,7 @@ feedwarrior - Feeds, warrior style
 Inspired by
 .UR https\://taskwarrior.org
 .UE ,
-this project seeks to simplify the maintenance of engineering work logs.
-
-It maintains a collection of logs.
+this project seeks to simplify the creation and maintenance of engineering work logs.
 
 Entries of each individual log has core text content. Additionally, every entry may have any number of file attachments associated with it.
 
@@ -104,13 +102,30 @@ The \fBfeedwarrior add\fP command enables interactive definition of textual upda
 It will open an editor (at the moment hardcoded to \fBvim\fP) to receive the contents.
 
 
+.SH DATA STORE
+
+Log entries are stored as email-like MIME Multipart messages, wrapped in a json metadata structure.
+
+Only the default, simple filesystem structure is currently available as storage backend.
+
+
 .SH EXAMPLE
 
 .EX
+# create feed
 feedwarrior create --alias myfeed
-echo "this is some content" > /tmp/foo.txt
-entry=`feedwarrior entry -s "first update" /tmp/foo.txt`
-feedwarrior attach -e $entry <attachment_file>
+
+¤ add log entry
+ENTRY=`feedwarrior -l myfeed entry -s "first update" /path/to/contents.txt
+
+# attach file to entry
+feedwarrior attach -e $ENTRY <attachment_file>
+
+¤ interactively add log entry contents
+entry=`feedwarrior -l myfeed add -s "second update" 
+
+# show current state of feed (chronologically)
+feedwarrior -l myfeed show
 .EE
 
 
@@ -136,4 +151,4 @@ PGP: 59A844A484AC11253D3A3E9DCDCBD24DD1D0E001
 
 .SH SOURCE CODE
 
-https://holbrook.no/src/feedwarrior/log.htm ggj
+https://holbrook.no/src/feedwarrior/log.html
