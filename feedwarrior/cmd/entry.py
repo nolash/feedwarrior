@@ -11,6 +11,7 @@ import feedwarrior
 from feedwarrior import entry as feedentry
 from feedwarrior.adapters import fileadapter
 from feedwarrior.common import task_ids_to_uuids, check_task_uuids
+from feedwarrior.error import NotMultipartError
 
 logg = logging.getLogger()
 
@@ -36,7 +37,13 @@ def execute(config, feed, args):
     if args.task_uuid != None:
         task_uuids += check_task_uuids(config.task_dir, args.task_uuid)
 
-    entry = feedentry.from_multipart_file(args.path)
+    try:
+        entry = feedentry.from_multipart_file(args.path)
+    except NotMultipartError as e:
+        logg.info('{} is not a multipart message, will attempt to make one from it'.format(args.path))
+        multipart_path = feedentry.to_multipart_file(args.path)
+        entry = feedentry.from_multipart_file(multipart_path)
+
     for t in task_uuids:
         uu = feedwarrior.common.parse_uuid(t)
         entry.add_extension(feedwarrior.extension.TASKWARRIOR, uu)

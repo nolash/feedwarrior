@@ -1,0 +1,2 @@
+class NotMultipartError(Exception):
+    pass

@@ -1,14 +1,20 @@
 # standard imports
+import os
 import email
+import email.message
+import email.utils
 import uuid
 import logging
 import base64
 import enum
 import time
 import gzip
+import tempfile
+import datetime
 
 # local imports
 from .common import defaulthashers
+from .error import NotMultipartError
 
 logg = logging.getLogger()
 
@@ -61,6 +67,35 @@ class entry:
             'payload': self.message.as_string(),
                 }
 
+
+def to_multipart_file(path):
+    #d = tempfile.TemporaryDirectory()
+    #t = tempfile.NamedTemporaryFile(mode='w+', dir=d.name)
+
+    basepath = os.path.basename(path)
+    outpath = '.' + basepath + '_multipart'
+    outpath = os.path.join(os.path.dirname(path), outpath)
+    f = open(path, 'r')
+    s = f.read()
+    f.close()
+
+    env = email.message.EmailMessage()
+    env.add_header('Date', email.utils.formatdate())
+    env.add_header('Content-Type', 'multipart/mixed')
+    env.add_attachment(s)
+
+    for msg in env.iter_attachments():
+        msg.add_header('Subject', 'Entry added ' + email.utils.formatdate(localtime=True))
+        msg.replace_header('Content-Disposition', 'inline')
+
+    f = open(outpath, 'w')
+    f.write(env.as_string())
+    f.close()
+
+    logg.debug("converted to multipath in " + outpath)
+
+    return outpath
+
    
 
 def from_multipart_file(filename, hashers=defaulthashers):
@@ -76,7 +111,7 @@ def from_multipart_file(filename, hashers=defaulthashers):
 
 def from_multipart(m, hashers=defaulthashers):
     if not m.is_multipart():
-        raise ValueError('{} is not a MIME multipart message'.format(filename))
+        raise NotMultipartError('not a MIME multipart message')
 
     # the hasher calculates a uuid from the canonical order of the message contents
     # TODO: currently the canonical order is the order of items in the message. this should

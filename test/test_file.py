@@ -39,8 +39,9 @@ class TestFileadapter(unittest.TestCase):
         e = entry(uu, msg)
         a.put(uu, e)
 
-        print('ieeeee')
         logg.debug(a.get(uu))
+
+
 
 if __name__ == '__main__':
     unittest.main()
